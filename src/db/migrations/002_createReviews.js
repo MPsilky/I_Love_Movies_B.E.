@@ -1,5 +1,7 @@
 exports.up = function(knex) {
-  return knex.schema.createTable("reviews", (table) => {
+  return knex.schema.hasTable("reviews").then(function(exists) {
+    if (!exists) {
+      return knex.schema.createTable("reviews", (table) => {
         table.increments("review_id").primary();
         table.text("content");
         table.integer("score");
@@ -16,7 +18,9 @@ exports.up = function(knex) {
             .inTable("movies")
             .onDelete("CASCADE");
         table.timestamps(true, true);
-    })
+      });
+    }
+  });
 };
 
 exports.down = function(knex) {
